@@ -10,6 +10,12 @@ npm run smoke
 node src/cli.js fixtures/complete.md --format markdown
 ```
 
+## Install
+
+```bash
+npm install -g agent-handoff-contract-skill
+```
+
 ## CLI
 
 ```bash
@@ -25,6 +31,26 @@ node src/cli.js fixtures/incomplete.md --format json
 ```
 
 The CLI exits `0` for pass or warn reports and `2` for fail reports.
+
+## Verify
+
+Run the release-readiness check before promoting the package:
+
+```bash
+npm run check
+npm test
+npm run smoke
+npm run package:smoke
+npm run release:check
+```
+
+Pull requests and pushes to `main` run the release gate in GitHub Actions.
+
+## Package contents
+
+`npm run package:smoke` performs a dry-run pack and asserts that the tarball
+contains the CLI entrypoint, library source, fixtures, `SKILL.md`, README,
+license, and security policy.
 
 ## Limitations
 

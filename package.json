@@ -18,6 +18,10 @@
     "type": "git",
     "url": "git+https://github.com/rogerchappel/agent-handoff-contract-skill.git"
   },
+  "bugs": {
+    "url": "https://github.com/rogerchappel/agent-handoff-contract-skill/issues"
+  },
+  "homepage": "https://github.com/rogerchappel/agent-handoff-contract-skill#readme",
   "files": [
     "src",
     "scripts",
@@ -25,7 +29,8 @@
     "docs",
     "SKILL.md",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "SECURITY.md"
   ],
   "keywords": [
     "agent-skill",
