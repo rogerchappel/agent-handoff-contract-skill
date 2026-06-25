@@ -1,0 +1,13 @@
+{
+  "title": "Risky Connector Handoff",
+  "objective": "Send CRM follow-up updates",
+  "owner": "connector-agent",
+  "currentState": "Draft is ready.",
+  "inputs": "crm-export.json",
+  "expectedOutputs": "Send updates to CRM",
+  "approvalBoundaries": "TBD",
+  "sideEffectLimits": "Can update production CRM",
+  "verification": "Reviewed draft only",
+  "blockers": "None",
+  "nextAction": "Push the CRM changes"
+}
