@@ -10,8 +10,23 @@
     "test": "node --test",
     "check": "node --check src/index.js && node --check src/cli.js",
     "smoke": "node src/cli.js fixtures/complete.md --format markdown",
+    "package:smoke": "node scripts/package-smoke.js",
+    "release:check": "npm run check && npm test && npm run smoke && npm run package:smoke",
     "validate": "bash scripts/validate.sh"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rogerchappel/agent-handoff-contract-skill.git"
+  },
+  "files": [
+    "src",
+    "scripts",
+    "fixtures",
+    "docs",
+    "SKILL.md",
+    "README.md",
+    "LICENSE"
+  ],
   "keywords": [
     "agent-skill",
     "handoff",
