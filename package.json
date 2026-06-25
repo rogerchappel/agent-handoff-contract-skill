@@ -1,0 +1,25 @@
+{
+  "name": "agent-handoff-contract-skill",
+  "version": "0.1.0",
+  "description": "Validate agent-to-agent handoff notes for ownership, approvals, blockers, and evidence.",
+  "type": "module",
+  "bin": {
+    "handoff-contract": "./src/cli.js"
+  },
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check src/index.js && node --check src/cli.js",
+    "smoke": "node src/cli.js fixtures/complete.md --format markdown",
+    "validate": "bash scripts/validate.sh"
+  },
+  "keywords": [
+    "agent-skill",
+    "handoff",
+    "contract",
+    "workflow"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  }
+}
