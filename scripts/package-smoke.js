@@ -37,6 +37,8 @@ for (const expected of [
   'src/cli.js',
   'src/index.js',
   'fixtures/complete.md',
+  'docs/SAFETY.md',
+  'docs/RELEASE_CANDIDATE.md',
   'SKILL.md',
   'README.md',
   'LICENSE',
