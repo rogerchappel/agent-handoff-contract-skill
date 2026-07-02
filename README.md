@@ -50,7 +50,7 @@ Pull requests and pushes to `main` run the release gate in GitHub Actions.
 
 `npm run package:smoke` performs a dry-run pack and asserts that the tarball
 contains the CLI entrypoint, library source, fixtures, `SKILL.md`, README,
-license, and security policy.
+release notes, safety notes, license, and security policy.
 
 ## Limitations
 

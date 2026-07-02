@@ -23,7 +23,18 @@ if (pack.status !== 0) {
 }
 
 const listing = `${pack.stdout}\n${pack.stderr}`;
-for (const expected of ['src/cli.js', 'src/index.js', 'fixtures/complete.md', 'SKILL.md', 'README.md', 'LICENSE', 'SECURITY.md']) {
+for (const expected of [
+  'src/cli.js',
+  'src/index.js',
+  'fixtures/complete.md',
+  'docs/SAFETY.md',
+  'docs/RELEASE_CANDIDATE.md',
+  'SKILL.md',
+  'README.md',
+  'LICENSE',
+  'SECURITY.md',
+  'CHANGELOG.md'
+]) {
   if (!listing.includes(expected)) {
     console.error(`npm pack dry-run did not include ${expected}`);
     process.exit(1);
