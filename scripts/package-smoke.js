@@ -3,7 +3,17 @@ import { spawnSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 
 const manifest = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
-const requiredFiles = ['src', 'scripts', 'fixtures', 'docs', 'SKILL.md', 'README.md', 'LICENSE', 'SECURITY.md'];
+const requiredFiles = [
+  'src',
+  'scripts',
+  'fixtures',
+  'docs',
+  'SKILL.md',
+  'README.md',
+  'LICENSE',
+  'SECURITY.md',
+  'CHANGELOG.md',
+];
 
 for (const file of requiredFiles) {
   if (!manifest.files?.includes(file)) {
@@ -33,7 +43,7 @@ for (const expected of [
   'README.md',
   'LICENSE',
   'SECURITY.md',
-  'CHANGELOG.md'
+  'CHANGELOG.md',
 ]) {
   if (!listing.includes(expected)) {
     console.error(`npm pack dry-run did not include ${expected}`);

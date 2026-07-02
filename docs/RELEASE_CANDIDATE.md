@@ -10,6 +10,8 @@ Initial public build of `agent-handoff-contract-skill`.
 npm run check
 npm test
 npm run smoke
+npm run package:smoke
+npm run release:check
 bash scripts/validate.sh
 ```
 
@@ -18,6 +20,8 @@ bash scripts/validate.sh
 - `npm run check`: passed
 - `npm test`: passed, 5 tests
 - `npm run smoke`: passed through `scripts/validate.sh`
+- `npm run package:smoke`: passed package boundary dry run
+- `npm run release:check`: passed the maintained release gate
 - `bash scripts/validate.sh`: passed
 
 ## Classification
