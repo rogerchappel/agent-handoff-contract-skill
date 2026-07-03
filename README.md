@@ -52,6 +52,19 @@ Pull requests and pushes to `main` run the release gate in GitHub Actions.
 contains the CLI entrypoint, library source, fixtures, `SKILL.md`, README,
 release notes, safety notes, license, and security policy.
 
+
+## Verification
+
+Run the local quality gates before opening a pull request:
+
+```sh
+npm run lint
+npm test
+npm run smoke
+```
+
+`npm run lint` is an alias for the repository static check so contributors can use the common npm workflow without guessing the project-specific command.
+
 ## Limitations
 
 - The checker validates handoff completeness; it does not create sessions or send messages.
