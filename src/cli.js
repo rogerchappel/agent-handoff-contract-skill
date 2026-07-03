@@ -1,5 +1,11 @@
 #!/usr/bin/env node
+import { readFileSync } from "node:fs";
 import { readHandoff, validateHandoff, formatMarkdown } from "./index.js";
+
+function packageVersion() {
+  const packageJson = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
+  return packageJson.version;
+}
 
 function parseArgs(argv) {
   const args = { file: null, format: "json" };
@@ -7,6 +13,7 @@ function parseArgs(argv) {
     const value = argv[index];
     if (value === "--format") args.format = argv[++index];
     else if (value === "--help" || value === "-h") args.help = true;
+    else if (value === "--version" || value === "-v") args.version = true;
     else if (!args.file) args.file = value;
     else throw new Error(`Unexpected argument: ${value}`);
   }
@@ -19,6 +26,10 @@ function usage() {
 
 try {
   const args = parseArgs(process.argv.slice(2));
+  if (args.version) {
+    process.stdout.write(`${packageVersion()}\n`);
+    process.exit(0);
+  }
   if (args.help || !args.file) {
     process.stdout.write(usage());
     process.exit(args.help ? 0 : 1);

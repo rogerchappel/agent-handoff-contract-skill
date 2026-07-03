@@ -1,5 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { readHandoff, validateHandoff, formatMarkdown, parseMarkdown } from "../src/index.js";
 
 test("passes a complete local-only handoff", () => {
@@ -33,4 +35,10 @@ test("formats a markdown report", () => {
   const markdown = formatMarkdown(report);
   assert.match(markdown, /Handoff Contract Report/);
   assert.match(markdown, /Status: pass/);
+});
+
+test("prints the package version", () => {
+  const packageJson = JSON.parse(readFileSync("package.json", "utf8"));
+  const output = execFileSync("node", ["src/cli.js", "--version"], { encoding: "utf8" });
+  assert.equal(output.trim(), packageJson.version);
 });
