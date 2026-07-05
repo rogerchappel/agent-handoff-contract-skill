@@ -7,6 +7,7 @@ Agent Handoff Contract Skill is a local-first CLI and reusable agent skill for v
 ```bash
 npm test
 npm run smoke
+node src/cli.js --help
 node src/cli.js fixtures/complete.md --format markdown
 ```
 
