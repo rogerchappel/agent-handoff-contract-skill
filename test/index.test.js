@@ -37,6 +37,13 @@ test("formats a markdown report", () => {
   assert.match(markdown, /Status: pass/);
 });
 
+test("prints usage help", () => {
+  const output = execFileSync("node", ["src/cli.js", "--help"], { encoding: "utf8" });
+  assert.match(output, /Usage: handoff-contract/);
+  assert.match(output, /handoff\.md\|handoff\.json/);
+  assert.match(output, /--format json\|markdown/);
+});
+
 test("prints the package version", () => {
   const packageJson = JSON.parse(readFileSync("package.json", "utf8"));
   const output = execFileSync("node", ["src/cli.js", "--version"], { encoding: "utf8" });
