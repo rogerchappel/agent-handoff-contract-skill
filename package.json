@@ -10,7 +10,7 @@
     "check": "node --check src/index.js && node --check src/cli.js",
     "lint": "node --check src/index.js && node --check src/cli.js",
     "test": "node --test",
-    "smoke": "node src/cli.js --version && node src/cli.js fixtures/complete.md --format markdown",
+    "smoke": "node src/cli.js --help && node src/cli.js --version && node src/cli.js fixtures/complete.md --format markdown",
     "package:smoke": "node scripts/package-smoke.js",
     "release:check": "npm run check && npm test && npm run smoke && npm run package:smoke",
     "validate": "bash scripts/validate.sh"
