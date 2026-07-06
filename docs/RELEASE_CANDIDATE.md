@@ -24,6 +24,11 @@ bash scripts/validate.sh
 - `npm run release:check`: passed the maintained release gate
 - `bash scripts/validate.sh`: passed
 
+## 2026-07-06 Verification Result
+
+- `npm run release:check`: passed locally, including syntax checks, 7 node:test cases, CLI help/version/fixture smoke, and package smoke.
+- Added a GitHub Actions release gate for pull requests and pushes to `main` on Node.js 20 and 22.
+
 ## Classification
 
 `ship`: the checker catches incomplete and risky handoffs while passing a complete local-only fixture.
