@@ -12,6 +12,7 @@ const requiredFiles = [
   'README.md',
   'LICENSE',
   'SECURITY.md',
+  'CONTRIBUTING.md',
   'CHANGELOG.md',
 ];
 
@@ -43,6 +44,7 @@ for (const expected of [
   'README.md',
   'LICENSE',
   'SECURITY.md',
+  'CONTRIBUTING.md',
   'CHANGELOG.md',
 ]) {
   if (!listing.includes(expected)) {
