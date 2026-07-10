@@ -8,3 +8,5 @@ All notable changes to this project will be documented in this file.
 - Added local checks for required handoff sections, ownership, approval boundaries, blockers, verification evidence, and next actions.
 - Added fixture-backed tests, smoke verification, package dry-run verification, and CI release gates.
 - Documented local-only safety boundaries and current validation limitations.
+- Added an explicit release-readiness gate for package metadata, docs, fixtures,
+  CI presence, and npm allowlist coverage.

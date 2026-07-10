@@ -45,6 +45,10 @@ npm run package:smoke
 npm run release:check
 ```
 
+`npm run release:readiness` verifies package metadata, CLI bin metadata,
+support docs, fixtures, CI presence, and the npm files allowlist before the
+runtime smoke and package dry-run checks run.
+
 Pull requests and pushes to `main` run the release gate in GitHub Actions.
 
 ## Package contents

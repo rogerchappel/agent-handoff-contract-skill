@@ -12,7 +12,8 @@
     "test": "node --test",
     "smoke": "node src/cli.js --help && node src/cli.js --version && node src/cli.js fixtures/complete.md --format markdown",
     "package:smoke": "node scripts/package-smoke.js",
-    "release:check": "npm run check && npm test && npm run smoke && npm run package:smoke",
+    "release:readiness": "node scripts/validate-release-readiness.mjs",
+    "release:check": "npm run release:readiness && npm run check && npm test && npm run smoke && npm run package:smoke",
     "validate": "bash scripts/validate.sh"
   },
   "repository": {
