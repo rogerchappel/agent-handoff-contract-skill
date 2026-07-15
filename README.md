@@ -79,3 +79,7 @@ npm run smoke
 ## Safety Notes
 
 This tool is local-only by default. It never writes tickets, opens sessions, sends chat messages, updates CRMs, merges PRs, or touches external systems. Any external action must be approved outside this checker.
+
+## Release notes
+
+Before tagging a release, confirm the smoke fixture still represents the intended workflow and summarize any changed output, limitations, or operator steps in the PR.
