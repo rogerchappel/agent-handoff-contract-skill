@@ -34,7 +34,8 @@
     "LICENSE",
     "SECURITY.md",
     "CONTRIBUTING.md",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "test"
   ],
   "keywords": [
     "agent-skill",
