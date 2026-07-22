@@ -24,6 +24,42 @@ test("flags risky external actions without explicit approval", () => {
   assert.ok(report.findings.some((finding) => finding.field === "sideEffectLimits"));
 });
 
+test("rejects negated approval language for risky actions", () => {
+  const handoff = readHandoff("fixtures/complete.md");
+  handoff.nextAction = "Deploy to production";
+  handoff.approvalBoundaries = "Human approval is not required.";
+
+  const report = validateHandoff(handoff);
+
+  assert.equal(report.status, "fail");
+  assert.equal(report.classification, "incubate");
+  assert.ok(report.findings.some((finding) => finding.field === "approvalBoundaries"));
+});
+
+test("rejects negated side-effect limits for external outputs", () => {
+  const handoff = readHandoff("fixtures/complete.md");
+  handoff.expectedOutputs = "Release output";
+  handoff.sideEffectLimits = "This is not local-only and is not read-only.";
+
+  const report = validateHandoff(handoff);
+
+  assert.equal(report.status, "warn");
+  assert.ok(report.findings.some((finding) => finding.field === "sideEffectLimits"));
+});
+
+test("accepts affirmative approval and side-effect limits", () => {
+  const handoff = readHandoff("fixtures/complete.md");
+  handoff.nextAction = "Deploy to production";
+  handoff.expectedOutputs = "Release output";
+  handoff.approvalBoundaries = "Human approval is required.";
+  handoff.sideEffectLimits = "Approved local-only output.";
+
+  const report = validateHandoff(handoff);
+
+  assert.equal(report.status, "pass");
+  assert.equal(report.classification, "ship");
+});
+
 test("parses markdown sections into contract keys", () => {
   const parsed = parseMarkdown("## Expected Outputs\nDraft\n\n## Side-Effect Limits\nLocal-only");
   assert.equal(parsed.expectedOutputs, "Draft");

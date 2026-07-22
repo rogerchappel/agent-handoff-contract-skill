@@ -157,11 +157,19 @@ function containsRisk(value) {
 }
 
 function mentionsApproval(value) {
-  return /\b(approved|approval|required|do not|no external|human)\b/i.test(String(value || ""));
+  const text = String(value || "");
+  if (/\b(?:human\s+)?approval\s+(?:is\s+)?not\s+required\b|\bno\s+(?:human\s+)?approval\s+(?:is\s+)?required\b|\b(?:do|does)\s+not\s+require\s+(?:human\s+)?approval\b|\bwithout\s+(?:human\s+)?approval\b|\bnot\s+approved\b/i.test(text)) {
+    return false;
+  }
+  return /\b(approved|approval|required|do not|no external|human)\b/i.test(text);
 }
 
 function mentionsSideEffectLimit(value) {
-  return /\b(local-only|read-only|dry-run|no external|approved|do not)\b/i.test(String(value || ""));
+  const text = String(value || "");
+  if (/\bnot\s+(?:local-only|read-only|dry-run|approved)\b/i.test(text)) {
+    return false;
+  }
+  return /\b(local-only|read-only|dry-run|no external|approved|do not)\b/i.test(text);
 }
 
 function mentionsEvidence(value) {
