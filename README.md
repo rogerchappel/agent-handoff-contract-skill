@@ -13,8 +13,21 @@ node src/cli.js fixtures/complete.md --format markdown
 
 ## Install
 
+The package is not yet published to npm. Install the current source locally:
+
 ```bash
-npm install -g agent-handoff-contract-skill
+git clone https://github.com/rogerchappel/agent-handoff-contract-skill.git
+cd agent-handoff-contract-skill
+npm install
+npm link
+```
+
+This makes the `handoff-contract` command available from the checked-out
+source. After the package is published to npm, a global registry install will
+also be available:
+
+```bash
+npm install --global agent-handoff-contract-skill
 ```
 
 ## CLI

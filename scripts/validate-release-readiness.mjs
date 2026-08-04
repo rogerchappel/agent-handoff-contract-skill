@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 
 const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
+const readme = readFileSync('README.md', 'utf8');
 const failures = [];
 
 function requireField(condition, message) {
@@ -16,6 +17,18 @@ requireField(pkg.bugs?.url === 'https://github.com/rogerchappel/agent-handoff-co
 requireField(pkg.homepage === 'https://github.com/rogerchappel/agent-handoff-contract-skill#readme', 'homepage must point at the README');
 requireField(pkg.bin?.['handoff-contract'] === './src/cli.js', 'CLI bin must point at ./src/cli.js');
 requireField(Array.isArray(pkg.files), 'package files allowlist is required');
+
+const installSection = readme.match(/## Install\n([\s\S]*?)(?=\n## )/)?.[1] ?? '';
+requireField(
+  installSection.includes('git clone https://github.com/rogerchappel/agent-handoff-contract-skill.git') &&
+    installSection.includes('npm install') &&
+    installSection.includes('npm link'),
+  'README install guidance must provide an executable source install path'
+);
+requireField(
+  /After the package is published to npm,[\s\S]*npm install --global agent-handoff-contract-skill/.test(installSection),
+  'README must gate the global npm install command on package publication'
+);
 
 for (const file of [
   'README.md',

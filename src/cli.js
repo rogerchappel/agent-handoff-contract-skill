@@ -11,7 +11,14 @@ function parseArgs(argv) {
   const args = { file: null, format: "json" };
   for (let index = 0; index < argv.length; index += 1) {
     const value = argv[index];
-    if (value === "--format") args.format = argv[++index];
+    if (value === "--format") {
+      const format = argv[index + 1];
+      if (!format || format.startsWith("-")) {
+        throw new Error("Missing value for --format (expected json or markdown)");
+      }
+      args.format = format;
+      index += 1;
+    }
     else if (value === "--help" || value === "-h") args.help = true;
     else if (value === "--version" || value === "-v") args.version = true;
     else if (!args.file) args.file = value;
