@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { readHandoff, validateHandoff, formatMarkdown, parseMarkdown } from "../src/index.js";
 
@@ -84,4 +84,42 @@ test("prints the package version", () => {
   const packageJson = JSON.parse(readFileSync("package.json", "utf8"));
   const output = execFileSync("node", ["src/cli.js", "--version"], { encoding: "utf8" });
   assert.equal(output.trim(), packageJson.version);
+});
+
+test("reports a missing --format value as a usage error", () => {
+  const result = spawnSync("node", ["src/cli.js", "fixtures/complete.md", "--format"], {
+    encoding: "utf8"
+  });
+
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /Missing value for --format \(expected json or markdown\)/);
+});
+
+test("rejects an unsupported output format", () => {
+  const result = spawnSync("node", ["src/cli.js", "fixtures/complete.md", "--format", "yaml"], {
+    encoding: "utf8"
+  });
+
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /Unsupported format: yaml/);
+});
+
+test("accepts each documented output format", () => {
+  for (const format of ["json", "markdown"]) {
+    const result = spawnSync("node", ["src/cli.js", "fixtures/complete.md", "--format", format], {
+      encoding: "utf8"
+    });
+
+    assert.equal(result.status, 0, result.stderr);
+    assert.ok(result.stdout.length > 0);
+  }
+});
+
+test("preserves exit status 2 for failed validation reports", () => {
+  const result = spawnSync("node", ["src/cli.js", "fixtures/incomplete.md", "--format", "json"], {
+    encoding: "utf8"
+  });
+
+  assert.equal(result.status, 2);
+  assert.equal(JSON.parse(result.stdout).status, "fail");
 });
