@@ -44,7 +44,13 @@ Markdown handoffs use `##` sections such as `Objective`, `Owner`, `Current State
 node src/cli.js fixtures/incomplete.md --format json
 ```
 
-The CLI exits `0` for pass or warn reports and `2` for fail reports.
+The CLI accepts one input file and at most one `--format` option. Unknown
+options, repeated `--format` options, missing option values, and unsupported
+formats are usage errors; they print a concise error and usage text without
+reading the input file.
+
+The CLI exits `0` for pass or warn reports, `1` for usage or runtime errors,
+and `2` for fail reports.
 
 ## Verify
 
