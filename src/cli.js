@@ -9,18 +9,27 @@ function packageVersion() {
 
 function parseArgs(argv) {
   const args = { file: null, format: "json" };
+  let formatSeen = false;
   for (let index = 0; index < argv.length; index += 1) {
     const value = argv[index];
     if (value === "--format") {
+      if (formatSeen) {
+        throw new Error("Duplicate option: --format");
+      }
       const format = argv[index + 1];
       if (!format || format.startsWith("-")) {
         throw new Error("Missing value for --format (expected json or markdown)");
       }
+      if (!["json", "markdown"].includes(format)) {
+        throw new Error(`Unsupported format: ${format}`);
+      }
       args.format = format;
+      formatSeen = true;
       index += 1;
     }
     else if (value === "--help" || value === "-h") args.help = true;
     else if (value === "--version" || value === "-v") args.version = true;
+    else if (value.startsWith("-")) throw new Error(`Unknown option: ${value}`);
     else if (!args.file) args.file = value;
     else throw new Error(`Unexpected argument: ${value}`);
   }
@@ -52,5 +61,6 @@ try {
   process.exit(report.status === "fail" ? 2 : 0);
 } catch (error) {
   process.stderr.write(`${error.message}\n`);
+  process.stderr.write(usage());
   process.exit(1);
 }
