@@ -93,6 +93,32 @@ test("reports a missing --format value as a usage error", () => {
 
   assert.equal(result.status, 1);
   assert.match(result.stderr, /Missing value for --format \(expected json or markdown\)/);
+  assert.match(result.stderr, /Usage: handoff-contract/);
+});
+
+test("rejects unknown options before attempting a file read", () => {
+  const result = spawnSync("node", ["src/cli.js", "--bogus"], { encoding: "utf8" });
+
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /^Unknown option: --bogus/m);
+  assert.match(result.stderr, /Usage: handoff-contract/);
+  assert.doesNotMatch(result.stderr, /ENOENT|open '--bogus'/);
+});
+
+test("rejects repeated --format options", () => {
+  const result = spawnSync("node", [
+    "src/cli.js",
+    "fixtures/complete.md",
+    "--format",
+    "json",
+    "--format",
+    "markdown"
+  ], { encoding: "utf8" });
+
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /^Duplicate option: --format/m);
+  assert.match(result.stderr, /Usage: handoff-contract/);
+  assert.equal(result.stdout, "");
 });
 
 test("rejects an unsupported output format", () => {
