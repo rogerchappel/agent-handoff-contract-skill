@@ -60,6 +60,84 @@ test("accepts affirmative approval and side-effect limits", () => {
   assert.equal(report.classification, "ship");
 });
 
+test("does not treat unrelated required language as approval", () => {
+  const handoff = readHandoff("fixtures/complete.md");
+  handoff.nextAction = "Deploy to production";
+  handoff.approvalBoundaries = "Required documentation is attached.";
+
+  const report = validateHandoff(handoff);
+
+  assert.equal(report.status, "fail");
+  assert.equal(report.classification, "incubate");
+  assert.ok(report.findings.some((finding) => finding.field === "approvalBoundaries"));
+});
+
+test("accepts contextual approval phrases but rejects negated boundaries", () => {
+  for (const approvalBoundaries of [
+    "This must be approved by the release manager.",
+    "Proceed only after human approval.",
+    "Do not deploy without human approval."
+  ]) {
+    const handoff = readHandoff("fixtures/complete.md");
+    handoff.nextAction = "Deploy to production";
+    handoff.approvalBoundaries = approvalBoundaries;
+    assert.equal(validateHandoff(handoff).status, "pass", approvalBoundaries);
+  }
+
+  for (const approvalBoundaries of ["Not approved.", "Deploy without human approval."]) {
+    const handoff = readHandoff("fixtures/complete.md");
+    handoff.nextAction = "Deploy to production";
+    handoff.approvalBoundaries = approvalBoundaries;
+    assert.equal(validateHandoff(handoff).status, "fail", approvalBoundaries);
+  }
+});
+
+test("does not treat unrelated do-not language as a side-effect limit", () => {
+  const handoff = readHandoff("fixtures/complete.md");
+  handoff.expectedOutputs = "Release output";
+  handoff.sideEffectLimits = "Do not omit the changelog.";
+
+  const report = validateHandoff(handoff);
+
+  assert.equal(report.status, "warn");
+  assert.ok(report.findings.some((finding) => finding.field === "sideEffectLimits"));
+});
+
+test("accepts explicit side-effect restrictions", () => {
+  for (const sideEffectLimits of [
+    "No external writes.",
+    "Do not publish the release.",
+    "Read-only review."
+  ]) {
+    const handoff = readHandoff("fixtures/complete.md");
+    handoff.expectedOutputs = "Release output";
+    handoff.sideEffectLimits = sideEffectLimits;
+    assert.equal(validateHandoff(handoff).status, "pass", sideEffectLimits);
+  }
+});
+
+test("does not treat an incidental path word as verification evidence", () => {
+  const handoff = readHandoff("fixtures/complete.md");
+  handoff.verification = "The path forward is clear.";
+
+  const report = validateHandoff(handoff);
+
+  assert.equal(report.status, "warn");
+  assert.ok(report.findings.some((finding) => finding.field === "verification"));
+});
+
+test("accepts affirmative verification evidence and explicit not-run status", () => {
+  for (const verification of [
+    "Tests passed.",
+    "Not run; environment unavailable.",
+    "Artifact path: docs/RELEASE_CANDIDATE.md."
+  ]) {
+    const handoff = readHandoff("fixtures/complete.md");
+    handoff.verification = verification;
+    assert.equal(validateHandoff(handoff).status, "pass", verification);
+  }
+});
+
 test("parses markdown sections into contract keys", () => {
   const parsed = parseMarkdown("## Expected Outputs\nDraft\n\n## Side-Effect Limits\nLocal-only");
   assert.equal(parsed.expectedOutputs, "Draft");

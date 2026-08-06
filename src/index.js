@@ -158,10 +158,13 @@ function containsRisk(value) {
 
 function mentionsApproval(value) {
   const text = String(value || "");
+  if (/\bdo\s+not\s+\w+(?:\s+\w+){0,5}\s+without\s+(?:human\s+)?approval\b/i.test(text)) {
+    return true;
+  }
   if (/\b(?:human\s+)?approval\s+(?:is\s+)?not\s+required\b|\bno\s+(?:human\s+)?approval\s+(?:is\s+)?required\b|\b(?:do|does)\s+not\s+require\s+(?:human\s+)?approval\b|\bwithout\s+(?:human\s+)?approval\b|\bnot\s+approved\b/i.test(text)) {
     return false;
   }
-  return /\b(approved|approval|required|do not|no external|human)\b/i.test(text);
+  return /\b(?:human\s+)?approval\s+(?:is\s+)?required\b|\brequires?\s+(?:human\s+)?approval\b|\bmust\s+be\s+approved\b|\bapproved\s+by\b|\bonly\s+after\s+(?:human\s+)?approval\b/i.test(text);
 }
 
 function mentionsSideEffectLimit(value) {
@@ -169,9 +172,10 @@ function mentionsSideEffectLimit(value) {
   if (/\bnot\s+(?:local-only|read-only|dry-run|approved)\b/i.test(text)) {
     return false;
   }
-  return /\b(local-only|read-only|dry-run|no external|approved|do not)\b/i.test(text);
+  return /\b(?:local[- ]only|read[- ]only|dry[- ]run)\b|\bno\s+external\s+(?:writes?|changes?|actions?|side effects?|systems?)\b|\bdo\s+not\s+(?:write|modify|update|send|publish|post|push|deploy|merge|release|delete|charge|purchase)\b/i.test(text);
 }
 
 function mentionsEvidence(value) {
-  return /\b(npm|test|check|smoke|pass|failed|not run|artifact|log|path|output|screenshot|http)\b/i.test(String(value || ""));
+  const text = String(value || "");
+  return /\b(?:npm|pnpm|yarn|bun)\s+(?:run\s+)?[\w:-]+\b|\b(?:tests?|checks?|smoke)(?:\s+tests?)?\s+(?:passed|failed|not run)\b|\bnot\s+run\b|\b(?:artifact|log|output|screenshot)\s+(?:path|at|saved\s+(?:at|to))\s*[:=]?\s*\S+|https?:\/\/\S+|(?:^|\s)(?:\.{0,2}\/)?[\w.-]+(?:\/[\w.-]+)+(?=$|[\s,.;])/i.test(text);
 }
