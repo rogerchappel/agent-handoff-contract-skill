@@ -11,7 +11,7 @@ function requireField(condition, message) {
 requireField(pkg.name === 'agent-handoff-contract-skill', 'package name must remain agent-handoff-contract-skill');
 requireField(pkg.version === '0.1.0', 'release candidate version must be 0.1.0');
 requireField(pkg.license === 'MIT', 'package must declare the MIT license');
-requireField(pkg.engines?.node === '>=18', 'Node engine must document the runtime baseline');
+requireField(pkg.engines?.node === '>=22', 'Node engine must document the supported runtime baseline');
 requireField(pkg.repository?.url === 'git+https://github.com/rogerchappel/agent-handoff-contract-skill.git', 'repository metadata must point at GitHub');
 requireField(pkg.bugs?.url === 'https://github.com/rogerchappel/agent-handoff-contract-skill/issues', 'bugs URL must point at GitHub issues');
 requireField(pkg.homepage === 'https://github.com/rogerchappel/agent-handoff-contract-skill#readme', 'homepage must point at the README');

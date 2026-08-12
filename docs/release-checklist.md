@@ -5,7 +5,8 @@ Use this checklist before cutting a public release for agent-handoff-contract-sk
 ## Required checks
 
 - Run `npm run release:check` from a clean checkout.
-- Confirm the CI release-readiness job passes on the release PR.
+- Confirm the CI release-readiness matrix passes on Node.js 22, 24, and 26 on
+  the release PR.
 - Review the npm pack dry-run output for unexpected files or missing runtime assets.
 - Exercise the CLI smoke path for `handoff-contract` with the checked-in fixture.
 
