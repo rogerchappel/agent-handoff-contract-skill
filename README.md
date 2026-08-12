@@ -13,6 +13,9 @@ node src/cli.js fixtures/complete.md --format markdown
 
 ## Install
 
+Node.js 22 or newer is required. The release gate verifies the package on
+each supported even-numbered Node.js major (22, 24, and 26).
+
 The package is not yet published to npm. Install the current source locally:
 
 ```bash
@@ -68,7 +71,8 @@ npm run release:check
 support docs, fixtures, CI presence, and the npm files allowlist before the
 runtime smoke and package dry-run checks run.
 
-Pull requests and pushes to `main` run the release gate in GitHub Actions.
+Pull requests and pushes to `main` run one release-gate workflow across every
+supported Node.js major in GitHub Actions.
 
 ## Package contents
 
