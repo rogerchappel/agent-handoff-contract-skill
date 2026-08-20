@@ -71,8 +71,8 @@ npm run release:check
 support docs, fixtures, CI presence, and the npm files allowlist before the
 runtime smoke and package dry-run checks run.
 
-Pull requests and pushes to `main` run one release-gate workflow across every
-supported Node.js major in GitHub Actions.
+Pull requests and pushes to `main` run one release-gate workflow across
+Node.js 22, 24, and 26 in GitHub Actions.
 
 ## Package contents
 
