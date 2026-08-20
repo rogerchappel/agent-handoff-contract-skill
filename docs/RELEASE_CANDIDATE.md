@@ -15,19 +15,19 @@ npm run release:check
 bash scripts/validate.sh
 ```
 
-## 2026-06-25 Verification Result
+## Current verification snapshot
 
-- `npm run check`: passed
-- `npm test`: passed, 5 tests
-- `npm run smoke`: passed through `scripts/validate.sh`
-- `npm run package:smoke`: passed package boundary dry run
-- `npm run release:check`: passed the maintained release gate
-- `bash scripts/validate.sh`: passed
+Verified 2026-08-21 against `main` at `d0b6226`:
 
-## 2026-07-06 Verification Result
+- `npm run release:check`: passed, including release-readiness validation,
+  syntax checks, 22 node:test cases, CLI help/version/fixture smoke, and
+  package smoke.
+- GitHub Actions CI passed the same release gate on Node.js 22, 24, and 26.
+- `bash scripts/validate.sh`: passed.
 
-- `npm run release:check`: passed locally, including syntax checks, 7 node:test cases, CLI help/version/fixture smoke, and package smoke.
-- Added a GitHub Actions release gate for pull requests and pushes to `main` on Node.js 20 and 22.
+The release-readiness validator derives the test count from a live `node:test`
+run and the supported runtimes from `.github/workflows/ci.yml`, then rejects
+documentation that disagrees with either executable source.
 
 ## Classification
 
