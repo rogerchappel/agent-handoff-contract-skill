@@ -1,7 +1,11 @@
+import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 
 const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
 const readme = readFileSync('README.md', 'utf8');
+const releaseCandidate = readFileSync('docs/RELEASE_CANDIDATE.md', 'utf8');
+const releaseChecklist = readFileSync('docs/release-checklist.md', 'utf8');
+const ciWorkflow = readFileSync('.github/workflows/ci.yml', 'utf8');
 const failures = [];
 
 function requireField(condition, message) {
@@ -28,6 +32,31 @@ requireField(
 requireField(
   /After the package is published to npm,[\s\S]*npm install --global agent-handoff-contract-skill/.test(installSection),
   'README must gate the global npm install command on package publication'
+);
+
+const matrixMatch = ciWorkflow.match(/node-version:\s*\[([^\]]+)\]/);
+const matrix = matrixMatch?.[1].split(',').map((value) => value.trim()) ?? [];
+const documentedMatrix = matrix.join(', ');
+requireField(matrix.length > 0, 'CI workflow must declare a Node.js matrix');
+for (const [name, content] of [
+  ['README', readme],
+  ['release checklist', releaseChecklist],
+  ['release candidate notes', releaseCandidate]
+]) {
+  requireField(
+    content.includes(`Node.js ${documentedMatrix.replace(/, ([^,]+)$/, ', and $1')}`),
+    `${name} must match the CI Node.js matrix (${documentedMatrix})`
+  );
+}
+
+const testRun = spawnSync(process.execPath, ['--test', '--test-reporter=tap'], { encoding: 'utf8' });
+requireField(testRun.status === 0, 'node:test must pass while validating release evidence');
+const testCount = testRun.stdout.match(/^# tests (\d+)$/m)?.[1];
+const documentedTestCounts = [...releaseCandidate.matchAll(/(\d+) node:test cases/g)].map((match) => match[1]);
+requireField(Boolean(testCount), 'node:test output must report a test count');
+requireField(
+  documentedTestCounts.length === 1 && documentedTestCounts[0] === testCount,
+  `release candidate notes must contain exactly one executable test count (${testCount})`
 );
 
 for (const file of [
