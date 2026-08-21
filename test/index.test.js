@@ -129,12 +129,32 @@ test("does not treat an incidental path word as verification evidence", () => {
 test("accepts affirmative verification evidence and explicit not-run status", () => {
   for (const verification of [
     "Tests passed.",
+    "npm run release:check completed successfully.",
     "Not run; environment unavailable.",
-    "Artifact path: docs/RELEASE_CANDIDATE.md."
+    "Artifact path: docs/RELEASE_CANDIDATE.md.",
+    "Log: tmp/release-check.log.",
+    "CI output: https://example.com/actions/runs/123."
   ]) {
     const handoff = readHandoff("fixtures/complete.md");
     handoff.verification = verification;
     assert.equal(validateHandoff(handoff).status, "pass", verification);
+  }
+});
+
+test("rejects bare package-manager commands and command mentions as evidence", () => {
+  for (const verification of [
+    "npm test",
+    "npm run release:check",
+    "pnpm test",
+    "yarn check",
+    "bun test",
+    "Run npm test before handoff."
+  ]) {
+    const handoff = readHandoff("fixtures/complete.md");
+    handoff.verification = verification;
+    const report = validateHandoff(handoff);
+    assert.equal(report.status, "warn", verification);
+    assert.ok(report.findings.some((finding) => finding.field === "verification"), verification);
   }
 });
 
