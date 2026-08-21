@@ -177,5 +177,5 @@ function mentionsSideEffectLimit(value) {
 
 function mentionsEvidence(value) {
   const text = String(value || "");
-  return /\b(?:npm|pnpm|yarn|bun)\s+(?:run\s+)?[\w:-]+\b|\b(?:tests?|checks?|smoke)(?:\s+tests?)?\s+(?:passed|failed|not run)\b|\bnot\s+run\b|\b(?:artifact|log|output|screenshot)\s+(?:path|at|saved\s+(?:at|to))\s*[:=]?\s*\S+|https?:\/\/\S+|(?:^|\s)(?:\.{0,2}\/)?[\w.-]+(?:\/[\w.-]+)+(?=$|[\s,.;])/i.test(text);
+  return /\b(?:tests?|checks?|smoke)(?:\s+tests?)?\s+(?:passed|failed|not run)\b|\b(?:passed|failed|succeeded|completed|errored|timed out)\b|\b(?:not\s+(?:run|executed)|skipped)\b|\b(?:artifact|log|output|report|screenshot)\s+(?:(?:path|at|in|saved\s+(?:at|to))\s*[:=]?|:\s*)\S+|https?:\/\/\S+|(?:^|\s)(?:\.{0,2}\/)?[\w.-]+(?:\/[\w.-]+)+(?=$|[\s,.;])/i.test(text);
 }
