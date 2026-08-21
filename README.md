@@ -98,6 +98,8 @@ npm run smoke
 - The checker validates handoff completeness; it does not create sessions or send messages.
 - Risk detection is conservative and term-based.
 - It cannot prove command output is authentic; it checks that evidence is disclosed.
+- A bare command such as `npm test` is not evidence. Record an observed outcome,
+  an artifact/log/output path or URL, or an explicit not-run status.
 
 ## Safety Notes
 

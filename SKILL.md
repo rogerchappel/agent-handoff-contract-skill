@@ -9,7 +9,8 @@ Use this skill before handing work from one agent to another agent or human when
 - Owner or receiving role
 - Inputs and expected outputs
 - Approval and side-effect boundaries
-- Verification evidence or explicit not-run notes
+- Verification evidence: an observed outcome, artifact/log/output path or URL,
+  or an explicit not-run note (a bare command is not evidence)
 
 ## Workflow
 
