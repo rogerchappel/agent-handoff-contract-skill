@@ -177,5 +177,11 @@ function mentionsSideEffectLimit(value) {
 
 function mentionsEvidence(value) {
   const text = String(value || "");
-  return /\b(?:tests?|checks?|smoke)(?:\s+tests?)?\s+(?:passed|failed|not run)\b|\b(?:passed|failed|succeeded|completed|errored|timed out)\b|\b(?:not\s+(?:run|executed)|skipped)\b|\b(?:artifact|log|output|report|screenshot)\s+(?:(?:path|at|in|saved\s+(?:at|to))\s*[:=]?|:\s*)\S+|https?:\/\/\S+|(?:^|\s)(?:\.{0,2}\/)?[\w.-]+(?:\/[\w.-]+)+(?=$|[\s,.;])/i.test(text);
+  const observedOutcome = /\b(?:tests?|checks?|smoke)(?:\s+tests?)?\s+(?:passed|failed|not run)\b|\b(?:passed|failed|succeeded|completed|errored|timed out)\b|\b(?:not\s+(?:run|executed)|skipped)\b/i;
+  if (observedOutcome.test(text)) return true;
+
+  const prospective = /\b(?:will|would|should|shall|must|plan(?:ned)?\s+to|intend(?:ed)?\s+to|to\s+be)\s+(?:\w+\s+){0,4}(?:run|execute[ds]?|perform(?:ed)?|save[ds]?|writ(?:e|ten)|generate[ds]?|publish(?:ed)?|upload(?:ed)?|check(?:ed)?|verif(?:y|ied)|test(?:ed)?)\b|\b(?:planned|prospective|future|pending|after\s+approval)\b/i;
+  if (prospective.test(text)) return false;
+
+  return /\b(?:artifact|log|output|report|screenshot)\s+(?:(?:path|at|in|saved\s+(?:at|to))\s*[:=]?|:\s*)\S+|https?:\/\/\S+|(?:^|\s)(?:\.{0,2}\/)?[\w.-]+(?:\/[\w.-]+)+(?=$|[\s,.;])/i.test(text);
 }
