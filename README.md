@@ -41,6 +41,12 @@ handoff-contract <handoff.md|handoff.json> [--format json|markdown]
 
 Markdown handoffs use `##` sections such as `Objective`, `Owner`, `Current State`, `Inputs`, `Expected Outputs`, `Approval Boundaries`, `Side-Effect Limits`, `Verification`, `Blockers`, and `Next Action`.
 
+JSON handoffs use the corresponding camel-case keys. `title` and every contract
+field must be a string when present; arrays, objects, numbers, booleans, and
+`null` are rejected with a field-specific error instead of being coerced to
+text. A missing title defaults to the input filename, while missing required
+contract fields remain validation failures.
+
 ## Example
 
 ```bash

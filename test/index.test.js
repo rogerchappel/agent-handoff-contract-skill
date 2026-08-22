@@ -1,13 +1,70 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { readHandoff, validateHandoff, formatMarkdown, parseMarkdown } from "../src/index.js";
 
 test("passes a complete local-only handoff", () => {
   const report = validateHandoff(readHandoff("fixtures/complete.md"));
   assert.equal(report.status, "pass");
   assert.equal(report.classification, "ship");
+});
+
+test("passes complete JSON and preserves valid Markdown behavior", () => {
+  for (const fixture of ["fixtures/complete.json", "fixtures/complete.md"]) {
+    const report = validateHandoff(readHandoff(fixture));
+    assert.equal(report.status, "pass", fixture);
+    assert.equal(report.classification, "ship", fixture);
+  }
+});
+
+test("rejects non-string values for every JSON contract field", () => {
+  const fields = [
+    "title",
+    "objective",
+    "owner",
+    "currentState",
+    "inputs",
+    "expectedOutputs",
+    "approvalBoundaries",
+    "sideEffectLimits",
+    "verification",
+    "blockers",
+    "nextAction"
+  ];
+  const invalidValues = [{ nested: "text" }, ["text"], null, 42, true];
+  const directory = mkdtempSync(join(tmpdir(), "handoff-contract-test-"));
+
+  try {
+    for (const [index, field] of fields.entries()) {
+      const file = join(directory, `${field}.json`);
+      writeFileSync(file, JSON.stringify({ [field]: invalidValues[index % invalidValues.length] }));
+      assert.throws(
+        () => readHandoff(file),
+        new RegExp(`JSON field ${field} must be a string\\.`),
+        field
+      );
+    }
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
+
+test("reports invalid JSON field shapes as field-specific runtime errors", () => {
+  const directory = mkdtempSync(join(tmpdir(), "handoff-contract-cli-"));
+  const file = join(directory, "invalid.json");
+  writeFileSync(file, JSON.stringify({ objective: {} }));
+
+  try {
+    const result = spawnSync("node", ["src/cli.js", file, "--format", "json"], { encoding: "utf8" });
+    assert.equal(result.status, 1);
+    assert.equal(result.stdout, "");
+    assert.match(result.stderr, /^JSON field objective must be a string\./m);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
 });
 
 test("fails incomplete handoff notes", () => {

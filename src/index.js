@@ -14,14 +14,30 @@ const REQUIRED_FIELDS = [
   ["nextAction", "Next Action"]
 ];
 
+const JSON_TEXT_FIELDS = ["title", ...REQUIRED_FIELDS.map(([key]) => key)];
+
 const RISK_TERMS = /\b(push|publish|deploy|send|email|delete|charge|purchase|merge|release|production|crm|slack|github)\b/i;
 
 export function readHandoff(filePath) {
   const raw = fs.readFileSync(filePath, "utf8");
   if (filePath.endsWith(".json")) {
-    return normalize(JSON.parse(raw), raw, filePath);
+    const value = JSON.parse(raw);
+    validateJsonFieldShapes(value);
+    return normalize(value, raw, filePath);
   }
   return normalize(parseMarkdown(raw), raw, filePath);
+}
+
+function validateJsonFieldShapes(value) {
+  if (!value || Array.isArray(value) || typeof value !== "object") {
+    throw new TypeError("JSON handoff must be an object.");
+  }
+
+  for (const field of JSON_TEXT_FIELDS) {
+    if (Object.hasOwn(value, field) && typeof value[field] !== "string") {
+      throw new TypeError(`JSON field ${field} must be a string.`);
+    }
+  }
 }
 
 export function validateHandoff(handoff) {

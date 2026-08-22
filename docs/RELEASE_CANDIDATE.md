@@ -17,10 +17,10 @@ bash scripts/validate.sh
 
 ## Current verification snapshot
 
-Verified 2026-08-21 against `main` at `d0b6226`:
+Verified 2026-08-23 against this release candidate:
 
 - `npm run release:check`: passed, including release-readiness validation,
-  syntax checks, 25 node:test cases, CLI help/version/fixture smoke, and
+  syntax checks, 28 node:test cases, CLI help/version/fixture smoke, and
   package smoke.
 - GitHub Actions CI passed the same release gate on Node.js 22, 24, and 26.
 - `bash scripts/validate.sh`: passed.
