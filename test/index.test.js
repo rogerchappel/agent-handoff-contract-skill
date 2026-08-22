@@ -141,6 +141,31 @@ test("accepts affirmative verification evidence and explicit not-run status", ()
   }
 });
 
+test("rejects prospective URL and path references as verification evidence", () => {
+  for (const verification of [
+    "Tests will be run after approval; plan at https://example.com/check.",
+    "The report will be saved to tmp/release-check.log.",
+    "See docs/verification.md for the planned test run."
+  ]) {
+    const handoff = readHandoff("fixtures/complete.md");
+    handoff.verification = verification;
+    const report = validateHandoff(handoff);
+    assert.equal(report.status, "warn", verification);
+    assert.ok(report.findings.some((finding) => finding.field === "verification"), verification);
+  }
+});
+
+test("uses explicit observed or not-run outcomes in mixed verification text", () => {
+  for (const verification of [
+    "Tests will be rerun tomorrow; current tests passed. Log: tmp/test.log.",
+    "Report will be saved to tmp/report.json; tests were not run because CI is unavailable."
+  ]) {
+    const handoff = readHandoff("fixtures/complete.md");
+    handoff.verification = verification;
+    assert.equal(validateHandoff(handoff).status, "pass", verification);
+  }
+});
+
 test("rejects bare package-manager commands and command mentions as evidence", () => {
   for (const verification of [
     "npm test",
