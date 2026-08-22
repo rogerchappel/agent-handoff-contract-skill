@@ -100,6 +100,8 @@ npm run smoke
 - It cannot prove command output is authentic; it checks that evidence is disclosed.
 - A bare command such as `npm test` is not evidence. Record an observed outcome,
   an artifact/log/output path or URL, or an explicit not-run status.
+- Planned or conditional checks do not become evidence merely because they
+  mention a future artifact path or URL.
 
 ## Safety Notes
 
