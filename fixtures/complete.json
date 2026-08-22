@@ -1,0 +1,13 @@
+{
+  "title": "Complete Local Handoff",
+  "objective": "Review the local handoff contract",
+  "owner": "review-agent",
+  "currentState": "Implementation and documentation are complete.",
+  "inputs": "README.md and test output",
+  "expectedOutputs": "A local review report",
+  "approvalBoundaries": "Human approval is required before external actions.",
+  "sideEffectLimits": "Local-only and read-only review.",
+  "verification": "Tests passed.",
+  "blockers": "None",
+  "nextAction": "Review the local report"
+}
