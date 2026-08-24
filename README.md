@@ -103,6 +103,9 @@ npm run smoke
 
 - The checker validates handoff completeness; it does not create sessions or send messages.
 - Risk detection is conservative and term-based.
+- Blocker contradiction warnings recognize affirmative `blocked`, `waiting`,
+  or `cannot` states; explicit `unblocked`, `not blocked`, and `no longer
+  waiting` language is treated as non-blocking.
 - It cannot prove command output is authentic; it checks that evidence is disclosed.
 - A bare command such as `npm test` is not evidence. Record an observed outcome,
   an artifact/log/output path or URL, or an explicit not-run status.
