@@ -74,6 +74,40 @@ test("fails incomplete handoff notes", () => {
   assert.ok(report.findings.some((finding) => finding.field === "verification"));
 });
 
+test("does not flag explicitly unblocked states when blockers are absent", () => {
+  for (const currentState of [
+    "Work is unblocked and ready.",
+    "The task is not blocked.",
+    "No longer waiting; implementation can continue."
+  ]) {
+    const handoff = readHandoff("fixtures/complete.md");
+    handoff.currentState = currentState;
+    handoff.blockers = "No blockers.";
+
+    const report = validateHandoff(handoff);
+
+    assert.equal(report.status, "pass", currentState);
+    assert.ok(!report.findings.some((finding) => finding.field === "blockers"), currentState);
+  }
+});
+
+test("flags affirmative blocked states when blockers are listed as absent", () => {
+  for (const currentState of [
+    "Work is blocked pending input.",
+    "Waiting for the dependency update.",
+    "Cannot continue until the decision is made."
+  ]) {
+    const handoff = readHandoff("fixtures/complete.md");
+    handoff.currentState = currentState;
+    handoff.blockers = "None.";
+
+    const report = validateHandoff(handoff);
+
+    assert.equal(report.status, "warn", currentState);
+    assert.ok(report.findings.some((finding) => finding.field === "blockers"), currentState);
+  }
+});
+
 test("flags risky external actions without explicit approval", () => {
   const report = validateHandoff(readHandoff("fixtures/risky.json"));
   assert.equal(report.status, "fail");
