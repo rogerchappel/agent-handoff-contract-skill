@@ -72,7 +72,7 @@ export function validateHandoff(handoff) {
     });
   }
 
-  if (/none|n\/a|no blockers/i.test(String(handoff.blockers || "")) && /blocked|cannot|waiting/i.test(String(handoff.currentState || ""))) {
+  if (mentionsNoBlockers(handoff.blockers) && soundsBlocked(handoff.currentState)) {
     findings.push({
       level: "warn",
       field: "blockers",
@@ -170,6 +170,19 @@ function isEmpty(value) {
 
 function containsRisk(value) {
   return RISK_TERMS.test(String(value || ""));
+}
+
+function mentionsNoBlockers(value) {
+  return /\b(?:none|n\/a|no blockers?)\b/i.test(String(value || ""));
+}
+
+function soundsBlocked(value) {
+  const text = String(value || "");
+  const withoutNegatedStates = text.replace(
+    /\b(?:not|no longer)\s+(?:currently\s+)?(?:blocked|waiting)\b/gi,
+    ""
+  );
+  return /\b(?:blocked|cannot|waiting)\b/i.test(withoutNegatedStates);
 }
 
 function mentionsApproval(value) {
