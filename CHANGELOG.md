@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Reject duplicate recognized Markdown contract sections instead of silently replacing earlier content.
+- Cover ordinary observed verification outcomes and reject prospective check statements.
 - Require contextual approval, side-effect, and verification evidence instead of accepting unrelated keywords.
 - Add release-readiness checks for package metadata, pack contents, and CI verification.
 All notable changes to this project will be documented in this file.

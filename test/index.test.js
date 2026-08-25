@@ -232,6 +232,34 @@ test("accepts affirmative verification evidence and explicit not-run status", ()
   }
 });
 
+test("recognizes ordinary observed check outcomes", () => {
+  for (const verification of [
+    "test passed",
+    "tests passed",
+    "check failed",
+    "smoke completed"
+  ]) {
+    const handoff = readHandoff("fixtures/complete.md");
+    handoff.verification = verification;
+    assert.equal(validateHandoff(handoff).status, "pass", verification);
+  }
+});
+
+test("rejects prospective check outcomes", () => {
+  for (const verification of [
+    "test will pass",
+    "tests should pass",
+    "check pending",
+    "smoke planned"
+  ]) {
+    const handoff = readHandoff("fixtures/complete.md");
+    handoff.verification = verification;
+    const report = validateHandoff(handoff);
+    assert.equal(report.status, "warn", verification);
+    assert.ok(report.findings.some((finding) => finding.field === "verification"), verification);
+  }
+});
+
 test("rejects prospective URL and path references as verification evidence", () => {
   for (const verification of [
     "Tests will be run after approval; plan at https://example.com/check.",
@@ -278,6 +306,37 @@ test("parses markdown sections into contract keys", () => {
   const parsed = parseMarkdown("## Expected Outputs\nDraft\n\n## Side-Effect Limits\nLocal-only");
   assert.equal(parsed.expectedOutputs, "Draft");
   assert.equal(parsed.sideEffectLimits, "Local-only");
+});
+
+test("rejects duplicate recognized Markdown contract sections", () => {
+  for (const [heading, field] of [
+    ["Approval Boundaries", "approvalBoundaries"],
+    ["Expected Outputs", "expectedOutputs"]
+  ]) {
+    assert.throws(
+      () => parseMarkdown(`## ${heading}\nFirst value\n\n## ${heading}\nSecond value`),
+      new RegExp(`Duplicate Markdown section ${heading} \\(${field}\\)\\.`),
+      heading
+    );
+  }
+});
+
+test("reports duplicate Markdown sections as field-specific CLI errors", () => {
+  const directory = mkdtempSync(join(tmpdir(), "handoff-contract-duplicate-"));
+  const file = join(directory, "duplicate.md");
+  writeFileSync(file, "## Approval Boundaries\nHuman approval required.\n\n## Approval Boundaries\nNone.\n");
+
+  try {
+    const result = spawnSync("node", ["src/cli.js", file], { encoding: "utf8" });
+    assert.equal(result.status, 1);
+    assert.equal(result.stdout, "");
+    assert.match(
+      result.stderr,
+      /^Duplicate Markdown section Approval Boundaries \(approvalBoundaries\)\./m
+    );
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
 });
 
 test("formats a markdown report", () => {

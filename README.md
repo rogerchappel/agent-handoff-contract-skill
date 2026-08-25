@@ -39,7 +39,9 @@ npm install --global agent-handoff-contract-skill
 handoff-contract <handoff.md|handoff.json> [--format json|markdown]
 ```
 
-Markdown handoffs use `##` sections such as `Objective`, `Owner`, `Current State`, `Inputs`, `Expected Outputs`, `Approval Boundaries`, `Side-Effect Limits`, `Verification`, `Blockers`, and `Next Action`.
+Markdown handoffs use `##` sections such as `Objective`, `Owner`, `Current State`, `Inputs`, `Expected Outputs`, `Approval Boundaries`, `Side-Effect Limits`, `Verification`, `Blockers`, and `Next Action`. Each recognized contract section may appear only once; a duplicate is rejected with the normalized field name instead of replacing earlier content.
+
+Verification must describe evidence that already exists. Ordinary observed outcomes such as `tests passed`, `check failed`, or `smoke completed` count as evidence. Prospective statements such as `tests should pass`, pending or planned checks, and bare commands do not.
 
 JSON handoffs use the corresponding camel-case keys. `title` and every contract
 field must be a string when present; arrays, objects, numbers, booleans, and
@@ -111,6 +113,8 @@ npm run smoke
   an artifact/log/output path or URL, or an explicit not-run status.
 - Planned or conditional checks do not become evidence merely because they
   mention a future artifact path or URL.
+- The checker does not infer future verification results from planned or
+  expected work.
 
 ## Safety Notes
 
