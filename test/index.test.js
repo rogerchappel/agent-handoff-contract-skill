@@ -232,6 +232,34 @@ test("accepts affirmative verification evidence and explicit not-run status", ()
   }
 });
 
+test("recognizes ordinary observed check outcomes", () => {
+  for (const verification of [
+    "test passed",
+    "tests passed",
+    "check failed",
+    "smoke completed"
+  ]) {
+    const handoff = readHandoff("fixtures/complete.md");
+    handoff.verification = verification;
+    assert.equal(validateHandoff(handoff).status, "pass", verification);
+  }
+});
+
+test("rejects prospective check outcomes", () => {
+  for (const verification of [
+    "test will pass",
+    "tests should pass",
+    "check pending",
+    "smoke planned"
+  ]) {
+    const handoff = readHandoff("fixtures/complete.md");
+    handoff.verification = verification;
+    const report = validateHandoff(handoff);
+    assert.equal(report.status, "warn", verification);
+    assert.ok(report.findings.some((finding) => finding.field === "verification"), verification);
+  }
+});
+
 test("rejects prospective URL and path references as verification evidence", () => {
   for (const verification of [
     "Tests will be run after approval; plan at https://example.com/check.",
