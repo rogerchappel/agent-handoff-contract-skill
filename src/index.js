@@ -114,11 +114,15 @@ export function formatMarkdown(report) {
 
 export function parseMarkdown(markdown) {
   const sections = {};
+  const recognizedFields = new Set(JSON_TEXT_FIELDS);
   let current = "title";
   for (const line of markdown.split("\n")) {
     const heading = line.match(/^##\s+(.+?)\s*$/);
     if (heading) {
       current = toKey(heading[1]);
+      if (recognizedFields.has(current) && Object.hasOwn(sections, current)) {
+        throw new TypeError(`Duplicate Markdown section ${heading[1]} (${current}).`);
+      }
       sections[current] = [];
       continue;
     }
