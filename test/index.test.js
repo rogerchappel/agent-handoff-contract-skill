@@ -280,6 +280,37 @@ test("parses markdown sections into contract keys", () => {
   assert.equal(parsed.sideEffectLimits, "Local-only");
 });
 
+test("rejects duplicate recognized Markdown contract sections", () => {
+  for (const [heading, field] of [
+    ["Approval Boundaries", "approvalBoundaries"],
+    ["Expected Outputs", "expectedOutputs"]
+  ]) {
+    assert.throws(
+      () => parseMarkdown(`## ${heading}\nFirst value\n\n## ${heading}\nSecond value`),
+      new RegExp(`Duplicate Markdown section ${heading} \\(${field}\\)\\.`),
+      heading
+    );
+  }
+});
+
+test("reports duplicate Markdown sections as field-specific CLI errors", () => {
+  const directory = mkdtempSync(join(tmpdir(), "handoff-contract-duplicate-"));
+  const file = join(directory, "duplicate.md");
+  writeFileSync(file, "## Approval Boundaries\nHuman approval required.\n\n## Approval Boundaries\nNone.\n");
+
+  try {
+    const result = spawnSync("node", ["src/cli.js", file], { encoding: "utf8" });
+    assert.equal(result.status, 1);
+    assert.equal(result.stdout, "");
+    assert.match(
+      result.stderr,
+      /^Duplicate Markdown section Approval Boundaries \(approvalBoundaries\)\./m
+    );
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
+
 test("formats a markdown report", () => {
   const report = validateHandoff(readHandoff("fixtures/complete.md"));
   const markdown = formatMarkdown(report);
