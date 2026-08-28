@@ -60,6 +60,12 @@ options, repeated `--format` options, missing option values, and unsupported
 formats are usage errors; they print a concise error and usage text without
 reading the input file.
 
+`--help`/`-h` and `--version`/`-v` are complete top-level invocations and must
+be used alone. Combining either flag with a file, option, or positional
+argument exits `1`, prints an argument diagnostic and usage on stderr, and
+does not read the supplied input file. Used alone, these flags exit `0` and
+print help or the package version on stdout.
+
 The CLI exits `0` for pass or warn reports, `1` for usage or runtime errors,
 and `2` for fail reports.
 
