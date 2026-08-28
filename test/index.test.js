@@ -359,6 +359,27 @@ test("prints the package version", () => {
   assert.equal(output.trim(), packageJson.version);
 });
 
+test("treats help and version flags as complete top-level invocations", () => {
+  const cases = [
+    ["--help", "fixtures/complete.md"],
+    ["fixtures/complete.md", "-h"],
+    ["--version", "fixtures/does-not-exist.md"],
+    ["fixtures/does-not-exist.md", "-v"],
+    ["--help", "--format", "json"],
+    ["--format", "markdown", "--version"]
+  ];
+
+  for (const args of cases) {
+    const result = spawnSync("node", ["src/cli.js", ...args], { encoding: "utf8" });
+
+    assert.equal(result.status, 1, args.join(" "));
+    assert.equal(result.stdout, "", args.join(" "));
+    assert.match(result.stderr, /must be used alone/, args.join(" "));
+    assert.match(result.stderr, /Usage: handoff-contract/, args.join(" "));
+    assert.doesNotMatch(result.stderr, /ENOENT|fixtures\/does-not-exist/, args.join(" "));
+  }
+});
+
 test("reports a missing --format value as a usage error", () => {
   const result = spawnSync("node", ["src/cli.js", "fixtures/complete.md", "--format"], {
     encoding: "utf8"
