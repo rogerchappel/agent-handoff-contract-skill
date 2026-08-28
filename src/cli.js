@@ -8,6 +8,11 @@ function packageVersion() {
 }
 
 function parseArgs(argv) {
+  const topLevelFlag = argv.find((value) => ["--help", "-h", "--version", "-v"].includes(value));
+  if (topLevelFlag && argv.length !== 1) {
+    throw new Error(`${topLevelFlag} must be used alone`);
+  }
+
   const args = { file: null, format: "json" };
   let formatSeen = false;
   for (let index = 0; index < argv.length; index += 1) {
