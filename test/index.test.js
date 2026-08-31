@@ -115,6 +115,57 @@ test("flags risky external actions without explicit approval", () => {
   assert.ok(report.findings.some((finding) => finding.field === "sideEffectLimits"));
 });
 
+test("allows read-only context that names external systems or releases", () => {
+  for (const nextAction of [
+    "Review the GitHub issue and prepare release notes locally.",
+    "Inspect the production checklist and Slack transcript read-only.",
+    "Compare CRM records with the local report without making changes."
+  ]) {
+    const handoff = readHandoff("fixtures/complete.md");
+    handoff.nextAction = nextAction;
+    handoff.approvalBoundaries = "No approval is required for this read-only local review.";
+
+    const report = validateHandoff(handoff);
+
+    assert.equal(report.status, "pass", nextAction);
+    assert.equal(report.classification, "ship", nextAction);
+  }
+});
+
+test("allows explicitly negated external actions", () => {
+  for (const nextAction of [
+    "Prepare release notes locally; do not publish anything.",
+    "Review the change, but do not deploy or merge it.",
+    "Draft the message without sending or emailing it."
+  ]) {
+    const handoff = readHandoff("fixtures/complete.md");
+    handoff.nextAction = nextAction;
+    handoff.approvalBoundaries = "No human approval is required for drafting only.";
+
+    assert.equal(validateHandoff(handoff).status, "pass", nextAction);
+  }
+});
+
+test("requires approval for genuine external actions", () => {
+  for (const nextAction of [
+    "Publish the package.",
+    "Deploy the service to production.",
+    "Merge the pull request.",
+    "Create a GitHub release.",
+    "Post the announcement to Slack.",
+    "Update the CRM record."
+  ]) {
+    const handoff = readHandoff("fixtures/complete.md");
+    handoff.nextAction = nextAction;
+    handoff.approvalBoundaries = "No approval is required.";
+
+    const report = validateHandoff(handoff);
+
+    assert.equal(report.status, "fail", nextAction);
+    assert.ok(report.findings.some((finding) => finding.field === "approvalBoundaries"), nextAction);
+  }
+});
+
 test("rejects negated approval language for risky actions", () => {
   const handoff = readHandoff("fixtures/complete.md");
   handoff.nextAction = "Deploy to production";
