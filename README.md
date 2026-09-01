@@ -124,7 +124,7 @@ npm run smoke
 
 ## Safety Notes
 
-This tool is local-only by default. It never writes tickets, opens sessions, sends chat messages, updates CRMs, merges PRs, or touches external systems. Any external action must be approved outside this checker.
+This tool is local-only by default. It never writes tickets, opens sessions, sends chat messages, updates CRMs, opens or merges PRs, or touches external systems. Any external action must be approved outside this checker. A next action that creates, opens, submits, raises, or files a pull request therefore requires affirmative approval; drafting a PR description locally, reviewing a PR read-only, or explicitly prohibiting PR creation does not.
 
 ## Release notes
 
