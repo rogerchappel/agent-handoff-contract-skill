@@ -26,8 +26,8 @@ The CLI reads a local file and writes a report to stdout. It must not create ses
 
 ## Approval Requirements
 
-Explicit human approval is required before a handoff can authorize external writes, public communication, production updates, payments, merges, releases, or account changes.
-Contextual mentions of those systems are not authorization: local review, release-note drafting, and explicitly prohibited external actions remain read-only work.
+Explicit human approval is required before a handoff can authorize external writes, including creating or opening a pull request, public communication, production updates, payments, merges, releases, or account changes.
+Contextual mentions of those systems are not authorization: local pull-request drafting or review, release-note drafting, and explicitly prohibited external actions remain read-only work.
 
 ## Examples
 
