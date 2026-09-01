@@ -166,6 +166,77 @@ test("requires approval for genuine external actions", () => {
   }
 });
 
+test("requires approval before creating a pull request", () => {
+  for (const nextAction of [
+    "Open a pull request.",
+    "Create the PR.",
+    "Submit a GitHub pull request for review.",
+    "Raise a PR against main.",
+    "File a pull request with these commits."
+  ]) {
+    const handoff = readHandoff("fixtures/complete.md");
+    handoff.nextAction = nextAction;
+    handoff.approvalBoundaries = "No approval is required.";
+
+    const report = validateHandoff(handoff);
+
+    assert.equal(report.status, "fail", nextAction);
+    assert.ok(report.findings.some((finding) => finding.field === "approvalBoundaries"), nextAction);
+  }
+});
+
+test("allows local pull-request drafting and review contexts", () => {
+  for (const nextAction of [
+    "Draft the pull request description locally.",
+    "Prepare a local PR draft without opening it.",
+    "Review pull request 42 read-only.",
+    "Inspect the PR diff and suggest comments locally."
+  ]) {
+    const handoff = readHandoff("fixtures/complete.md");
+    handoff.nextAction = nextAction;
+    handoff.approvalBoundaries = "No approval is required for local read-only work.";
+
+    assert.equal(validateHandoff(handoff).status, "pass", nextAction);
+  }
+});
+
+test("allows explicitly prohibited pull-request creation", () => {
+  for (const nextAction of [
+    "Do not open a pull request; prepare the description locally.",
+    "Never create a PR from this handoff.",
+    "Draft the change without submitting a pull request."
+  ]) {
+    const handoff = readHandoff("fixtures/complete.md");
+    handoff.nextAction = nextAction;
+    handoff.approvalBoundaries = "No approval is required for drafting only.";
+
+    assert.equal(validateHandoff(handoff).status, "pass", nextAction);
+  }
+});
+
+test("reports pull-request creation approval failures through the CLI", () => {
+  const directory = mkdtempSync(join(tmpdir(), "handoff-contract-pr-action-"));
+  const file = join(directory, "handoff.json");
+  const handoff = readHandoff("fixtures/complete.json");
+  handoff.nextAction = "Open a pull request.";
+  handoff.approvalBoundaries = "No approval required.";
+  const serialized = Object.fromEntries(
+    ["title", "objective", "owner", "currentState", "inputs", "expectedOutputs", "approvalBoundaries", "sideEffectLimits", "verification", "blockers", "nextAction"]
+      .map((field) => [field, handoff[field]])
+  );
+  writeFileSync(file, JSON.stringify(serialized));
+
+  try {
+    const result = spawnSync("node", ["src/cli.js", file, "--format", "json"], { encoding: "utf8" });
+    const report = JSON.parse(result.stdout);
+    assert.equal(result.status, 2);
+    assert.equal(report.status, "fail");
+    assert.ok(report.findings.some((finding) => finding.field === "approvalBoundaries"));
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
+
 test("rejects negated approval language for risky actions", () => {
   const handoff = readHandoff("fixtures/complete.md");
   handoff.nextAction = "Deploy to production";
