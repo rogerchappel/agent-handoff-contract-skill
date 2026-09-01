@@ -20,7 +20,8 @@ const DIRECT_EXTERNAL_ACTION = /\b(?:push|publish|deploy|send|email|delete|charg
 const RELEASE_ACTION = /\brelease\s+(?:the\s+)?(?:package|version|build|software|artifact)\b/i;
 const SYSTEM_ACTION = /\b(?:create|post|update|modify|write|push|publish|deploy|send|delete)\b[^.;\n]{0,60}\b(?:production|crm|slack|github)\b/i;
 const GITHUB_RELEASE_ACTION = /\bcreate\b[^.;\n]{0,30}\bgithub\s+release\b/i;
-const NEGATED_EXTERNAL_ACTION = /\b(?:do\s+not|don't|must\s+not|never|without)\s+(?:(?:push|publish|deploy|send|email|delete|charge|purchase|merge|release|create|post|update|modify|write)(?:ing|d|s|ed)?\b[^.;\n]*)/gi;
+const PULL_REQUEST_ACTION = /\b(?:create|open|submit|raise|file)\s+(?:a\s+|the\s+)?(?:github\s+)?(?:pull\s+request|pr)\b/i;
+const NEGATED_EXTERNAL_ACTION = /\b(?:do\s+not|don't|must\s+not|never|without)\s+(?:(?:push|publish|deploy|send|email|delete|charge|purchase|merge|release|create|open|submit|raise|file|post|update|modify|write)(?:ing|d|s|ed)?\b[^.;\n]*)/gi;
 const EXTERNAL_OUTPUT_TERMS = /\b(?:push|publish|deploy|send|email|delete|charge|purchase|merge|release|production|crm|slack|github)\b/i;
 
 export function readHandoff(filePath) {
@@ -182,7 +183,8 @@ function containsRisk(value) {
   return DIRECT_EXTERNAL_ACTION.test(actionableText)
     || RELEASE_ACTION.test(actionableText)
     || SYSTEM_ACTION.test(actionableText)
-    || GITHUB_RELEASE_ACTION.test(actionableText);
+    || GITHUB_RELEASE_ACTION.test(actionableText)
+    || PULL_REQUEST_ACTION.test(actionableText);
 }
 
 function containsExternalOutput(value) {
