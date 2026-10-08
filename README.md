@@ -49,6 +49,18 @@ field must be a string when present; arrays, objects, numbers, booleans, and
 text. A missing title defaults to the input filename, while missing required
 contract fields remain validation failures.
 
+## Machine-readable JSON contract
+
+The input shape is published as [JSON Schema](schemas/handoff.schema.json) using
+JSON Schema Draft 2020-12. Required fields mirror the validator contract;
+`title` is optional and additional fields are rejected. The fixture
+`fixtures/schema/complete.json` demonstrates a complete JSON handoff that can
+be validated directly:
+
+```bash
+node src/cli.js fixtures/schema/complete.json
+```
+
 ## Example
 
 ```bash

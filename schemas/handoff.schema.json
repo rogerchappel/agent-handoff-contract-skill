@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/rogerchappel/agent-handoff-contract-skill/blob/main/schemas/handoff.schema.json",
+  "title": "Agent Handoff Contract",
+  "description": "Machine-readable input contract consumed by the handoff validator.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "title": { "type": "string", "minLength": 1 },
+    "objective": { "type": "string" },
+    "owner": { "type": "string" },
+    "currentState": { "type": "string" },
+    "inputs": { "type": "string" },
+    "expectedOutputs": { "type": "string" },
+    "approvalBoundaries": { "type": "string" },
+    "sideEffectLimits": { "type": "string" },
+    "verification": { "type": "string" },
+    "blockers": { "type": "string" },
+    "nextAction": { "type": "string" }
+  },
+  "required": ["objective", "owner", "currentState", "inputs", "expectedOutputs", "approvalBoundaries", "sideEffectLimits", "verification", "blockers", "nextAction"]
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Launch Prep Handoff",
+  "objective": "Prepare a launch note from the verified repository state.",
+  "owner": "content-agent",
+  "currentState": "Implementation is complete and tests passed locally.",
+  "inputs": "- Repository path: ./sample\n- Evidence: docs/RELEASE_CANDIDATE.md",
+  "expectedOutputs": "- Draft launch note\n- No posting or publishing",
+  "approvalBoundaries": "Human approval required before any public post, GitHub release, merge, or external send.",
+  "sideEffectLimits": "Local-only and dry-run. Do not write to external systems.",
+  "verification": "npm test passed; npm run smoke passed; artifact path docs/RELEASE_CANDIDATE.md.",
+  "blockers": "None.",
+  "nextAction": "Draft the launch note in Markdown and return it for review."
+}

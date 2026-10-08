@@ -461,6 +461,16 @@ test("reports duplicate Markdown sections as field-specific CLI errors", () => {
   }
 });
 
+test("published JSON schema accepts the complete JSON handoff fixture", () => {
+  const schema = JSON.parse(readFileSync("schemas/handoff.schema.json", "utf8"));
+  const fixture = JSON.parse(readFileSync("fixtures/schema/complete.json", "utf8"));
+  assert.equal(schema.$schema, "https://json-schema.org/draft/2020-12/schema");
+  assert.equal(schema.type, "object");
+  assert.deepEqual(Object.keys(fixture).sort(), Object.keys(schema.properties).sort());
+  assert.deepEqual([...schema.required].sort(), Object.keys(fixture).filter((key) => key !== "title").sort());
+  assert.equal(validateHandoff(fixture).status, "pass");
+});
+
 test("formats a markdown report", () => {
   const report = validateHandoff(readHandoff("fixtures/complete.md"));
   const markdown = formatMarkdown(report);
