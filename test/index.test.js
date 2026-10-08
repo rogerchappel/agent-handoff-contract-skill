@@ -565,3 +565,17 @@ test("preserves exit status 2 for failed validation reports", () => {
   assert.equal(result.status, 2);
   assert.equal(JSON.parse(result.stdout).status, "fail");
 });
+
+test("exports a stable machine-readable handoff schema", () => {
+  const schema = JSON.parse(readFileSync("docs/handoff.schema.json", "utf8"));
+  assert.equal(schema.$schema, "https://json-schema.org/draft/2020-12/schema");
+  assert.equal(schema.type, "object");
+  assert.deepEqual(schema.required, [
+    "objective", "owner", "currentState", "inputs", "expectedOutputs",
+    "approvalBoundaries", "sideEffectLimits", "verification", "blockers", "nextAction"
+  ]);
+  assert.equal(schema.properties.title.type, "string");
+  for (const field of schema.required) assert.equal(schema.properties[field].type, "string", field);
+  assert.equal(schema.additionalProperties, false);
+  assert.deepEqual(validateHandoff(readHandoff("fixtures/complete.json")).status, "pass");
+});

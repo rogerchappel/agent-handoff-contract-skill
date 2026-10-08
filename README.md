@@ -129,3 +129,11 @@ This tool is local-only by default. It never writes tickets, opens sessions, sen
 ## Release notes
 
 Before tagging a release, confirm the smoke fixture still represents the intended workflow and summarize any changed output, limitations, or operator steps in the PR.
+
+## Machine-readable schema
+
+The JSON contract is described by the stable JSON Schema at
+[`docs/handoff.schema.json`](docs/handoff.schema.json) (JSON Schema 2020-12).
+It lists the required camel-case string fields and rejects undeclared fields;
+`title` is optional because the CLI defaults it to the input filename. Consumers
+can fetch this file directly or include it from the npm package under `docs/`.

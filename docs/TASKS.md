@@ -8,5 +8,5 @@
 - [x] Add complete, incomplete, and risky fixtures
 - [x] Add tests and smoke validation
 - [x] Document skill workflow and safety boundaries
-- [ ] Add schema export for other agents
+- [x] Add schema export for other agents (docs/handoff.schema.json)
 - [ ] Add adapter templates for project-management handoffs
