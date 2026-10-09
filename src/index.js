@@ -1,6 +1,20 @@
 import fs from "node:fs";
 import path from "node:path";
 
+export const HANDOFF_SCHEMA = Object.freeze({
+  title: Object.freeze({ type: "string", required: false }),
+  objective: Object.freeze({ type: "string", required: true }),
+  owner: Object.freeze({ type: "string", required: true }),
+  currentState: Object.freeze({ type: "string", required: true }),
+  inputs: Object.freeze({ type: "string", required: true }),
+  expectedOutputs: Object.freeze({ type: "string", required: true }),
+  approvalBoundaries: Object.freeze({ type: "string", required: true }),
+  sideEffectLimits: Object.freeze({ type: "string", required: true }),
+  verification: Object.freeze({ type: "string", required: true }),
+  blockers: Object.freeze({ type: "string", required: true }),
+  nextAction: Object.freeze({ type: "string", required: true })
+});
+
 const REQUIRED_FIELDS = [
   ["objective", "Objective"],
   ["owner", "Owner"],
@@ -12,9 +26,9 @@ const REQUIRED_FIELDS = [
   ["verification", "Verification"],
   ["blockers", "Blockers"],
   ["nextAction", "Next Action"]
-];
+].filter(([key]) => HANDOFF_SCHEMA[key].required);
 
-const JSON_TEXT_FIELDS = ["title", ...REQUIRED_FIELDS.map(([key]) => key)];
+const JSON_TEXT_FIELDS = Object.keys(HANDOFF_SCHEMA);
 
 const DIRECT_EXTERNAL_ACTION = /\b(?:push|publish|deploy|send|email|delete|charge|purchase|merge)\b/i;
 const RELEASE_ACTION = /\brelease\s+(?:the\s+)?(?:package|version|build|software|artifact)\b/i;

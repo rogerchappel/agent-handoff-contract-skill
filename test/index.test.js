@@ -4,7 +4,19 @@ import { execFileSync, spawnSync } from "node:child_process";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { readHandoff, validateHandoff, formatMarkdown, parseMarkdown } from "../src/index.js";
+import { HANDOFF_SCHEMA, readHandoff, validateHandoff, formatMarkdown, parseMarkdown } from "../src/index.js";
+
+test("exports the schema contract with requiredness matching validation", () => {
+  const requiredKeys = Object.entries(HANDOFF_SCHEMA)
+    .filter(([, definition]) => definition.required)
+    .map(([key]) => key);
+  const missing = validateHandoff({}).findings
+    .filter((finding) => finding.level === "fail" && finding.message.endsWith("is required."))
+    .map((finding) => finding.field);
+  assert.deepEqual(missing, requiredKeys);
+  assert.equal(HANDOFF_SCHEMA.title.required, false);
+  assert.ok(Object.isFrozen(HANDOFF_SCHEMA));
+});
 
 test("passes a complete local-only handoff", () => {
   const report = validateHandoff(readHandoff("fixtures/complete.md"));

@@ -47,7 +47,16 @@ JSON handoffs use the corresponding camel-case keys. `title` and every contract
 field must be a string when present; arrays, objects, numbers, booleans, and
 `null` are rejected with a field-specific error instead of being coerced to
 text. A missing title defaults to the input filename, while missing required
-contract fields remain validation failures.
+contract fields remain validation failures. Consumers can import the
+machine-readable schema and inspect each field's `type` and `required` flag:
+
+```js
+import { HANDOFF_SCHEMA } from "agent-handoff-contract-skill";
+console.log(HANDOFF_SCHEMA.objective); // { type: "string", required: true }
+```
+
+The exported `HANDOFF_SCHEMA` is frozen; it is the authoritative field
+contract used by validation and JSON shape checks.
 
 ## Example
 
